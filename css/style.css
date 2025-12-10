@@ -1397,31 +1397,6 @@ textarea.form-control {
 }
 .banner-horizontal.box-layout .banner-apps {margin-top: -226px;}
 .box .footer-area:before {height: 295px}
-/*--------------------------------------------*/
-/*  18. Scroll Up
-/*--------------------------------------------*/
-#scrollUp {
-    background: #2D3E50 none repeat scroll 0 0;
-    bottom: 35px;
-    color: #ffffff;
-    right: 12px;
-    cursor: pointer;
-    height: 40px;
-    line-height: 38px;
-    position: fixed;
-    text-align: center;
-    -webkit-transition: all 4ms linear 0s;
-            transition: all 4ms linear 0s;
-    width: 40px;
-    z-index: 9999;
-    font-size: 27px;
-    border: 1px solid #2D3E50
-}
-#scrollUp:hover {background-color: #fff; color: #2D3E50}
-.mean-container .mean-nav ul {
-  max-height: 250px;
-  overflow-x: scroll;
-}
 
 .logo-nav{
     width: 200px;

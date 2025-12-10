@@ -641,6 +641,12 @@
     .banner-text h1{
         padding-top: 0px;
     }
+    .banner-beneficios{
+        padding: 130px 0px 80px 0px;
+    }
+    .banner-pd{
+        padding-top: 140px !important;
+    }
 }
 
 @media only screen and (max-width: 479px) { 
@@ -687,5 +693,20 @@
     .video-tag{
         height: 175px;
         margin-top: 60px;
+    }
+    .midia-a img {
+        width: 154px;
+    }
+    .single-contact-info {
+        margin-bottom: 26px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    .contact-icon {
+        margin-bottom: 25px;
     }
 }

@@ -111,7 +111,6 @@
     });
  
 })(jQuery); 
-
 class SmoothScroll {
     constructor() {
         this.init();
@@ -122,26 +121,37 @@ class SmoothScroll {
         this.settings = {
             damping: 0.05,    // Quão suave (0.01 - 0.1)
             speed: 2,         // Velocidade do scroll
-            touchDamping: 0.1 // Suavidade em dispositivos touch
+            touchDamping: 0.08 // Suavidade em dispositivos touch
         };
 
         this.currentScroll = 0;
         this.targetScroll = 0;
         this.isScrolling = false;
+        this.isTouchDevice = this.detectTouchDevice();
+        this.lastTouchTime = 0;
+        this.touchStartY = 0;
+        this.touchStartScroll = 0;
+        this.isDragging = false;
+        this.velocity = 0;
+        this.lastTime = 0;
         
         this.bindEvents();
         this.animate();
     }
 
-    bindEvents() {
-        // Previne o scroll padrão
-        document.addEventListener('scroll', (e) => {
-            e.preventDefault();
-        }, { passive: false });
+    detectTouchDevice() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
 
+    bindEvents() {
         // Detecta a intenção de scroll
         window.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
-        window.addEventListener('touchmove', this.handleTouch.bind(this), { passive: false });
+        
+        // Eventos de touch melhorados
+        window.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
+        window.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+        window.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: true });
+        
         window.addEventListener('keydown', this.handleKeys.bind(this));
 
         // Links âncora
@@ -150,9 +160,18 @@ class SmoothScroll {
         // Resize e load
         window.addEventListener('resize', this.updateScroll.bind(this));
         window.addEventListener('load', this.updateScroll.bind(this));
+        
+        // Impede o scroll padrão apenas se não for touch device
+        if (!this.isTouchDevice) {
+            document.addEventListener('scroll', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+        }
     }
 
     handleWheel(e) {
+        if (this.isTouchDevice) return; // Não aplica wheel em dispositivos touch
+        
         e.preventDefault();
         
         const delta = e.deltaY || e.detail || (-e.wheelDelta);
@@ -165,23 +184,56 @@ class SmoothScroll {
         }
     }
 
-    handleTouch(e) {
+    handleTouchStart(e) {
         if (e.touches.length === 1) {
+            this.touchStartY = e.touches[0].clientY;
+            this.touchStartScroll = this.currentScroll;
+            this.isDragging = true;
+            this.velocity = 0;
+            this.lastTime = Date.now();
+            this.lastTouchY = this.touchStartY;
+        }
+    }
+
+    handleTouchMove(e) {
+        if (e.touches.length === 1 && this.isDragging) {
             e.preventDefault();
-            const touch = e.touches[0];
             
-            if (this.lastTouchY) {
-                const delta = this.lastTouchY - touch.clientY;
-                this.targetScroll += delta * this.settings.speed * 2;
+            const touchY = e.touches[0].clientY;
+            const currentTime = Date.now();
+            const deltaTime = currentTime - this.lastTime;
+            
+            if (deltaTime > 0) {
+                const deltaY = this.lastTouchY - touchY;
+                this.velocity = deltaY / deltaTime;
                 
+                // Aplica scroll diretamente durante o drag para melhor responsividade
+                this.targetScroll = this.touchStartScroll + (this.touchStartY - touchY) * 1.5;
                 this.targetScroll = Math.max(0, Math.min(this.targetScroll, this.getMaxScroll()));
                 
-                if (!this.isScrolling) {
-                    this.isScrolling = true;
-                }
+                // Atualiza posição atual imediatamente para feedback visual
+                this.currentScroll = this.targetScroll;
+                window.scrollTo(0, this.currentScroll);
+                
+                this.lastTouchY = touchY;
+                this.lastTime = currentTime;
             }
             
-            this.lastTouchY = touch.clientY;
+            this.isScrolling = true;
+        }
+    }
+
+    handleTouchEnd(e) {
+        if (this.isDragging) {
+            this.isDragging = false;
+            
+            // Aplica momentum/inércia baseado na velocidade
+            if (Math.abs(this.velocity) > 0.1) {
+                const momentum = this.velocity * 800; // Ajuste da força do momentum
+                this.targetScroll += momentum;
+                this.targetScroll = Math.max(0, Math.min(this.targetScroll, this.getMaxScroll()));
+                this.isScrolling = true;
+            }
         }
     }
 
@@ -244,16 +296,25 @@ class SmoothScroll {
     }
 
     animate() {
-        const damping = this.isTouchDevice() ? this.settings.touchDamping : this.settings.damping;
+        if (this.isTouchDevice && this.isDragging) {
+            // Durante o drag, não aplica damping para manter responsividade
+            requestAnimationFrame(this.animate.bind(this));
+            return;
+        }
+        
+        const damping = this.isTouchDevice ? this.settings.touchDamping : this.settings.damping;
         
         // Aplica suavização
-        this.currentScroll += (this.targetScroll - this.currentScroll) * damping;
+        const diff = this.targetScroll - this.currentScroll;
+        this.currentScroll += diff * damping;
         
         // Aplica o scroll
-        window.scrollTo(0, this.currentScroll);
+        if (Math.abs(diff) > 0.1) {
+            window.scrollTo(0, this.currentScroll);
+        }
         
         // Verifica se parou de scrollar
-        if (Math.abs(this.targetScroll - this.currentScroll) < 0.1) {
+        if (Math.abs(this.targetScroll - this.currentScroll) < 0.5) {
             this.currentScroll = this.targetScroll;
             this.isScrolling = false;
         }
@@ -269,13 +330,18 @@ class SmoothScroll {
     getMaxScroll() {
         return document.documentElement.scrollHeight - window.innerHeight;
     }
-
-    isTouchDevice() {
-        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    }
 }
 
-// Inicialização
+// Inicialização condicional - só ativa em desktop
 document.addEventListener('DOMContentLoaded', () => {
-    new SmoothScroll();
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Ativa apenas em desktop para evitar problemas no mobile
+    if (!isMobile) {
+        new SmoothScroll();
+    } else {
+        // Para mobile, opcionalmente você pode adicionar um smooth scroll mais leve
+        // ou deixar o scroll nativo
+        console.log('SmoothScroll desativado em dispositivos móveis');
+    }
 });
