@@ -344,4 +344,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // ou deixar o scroll nativo
         console.log('SmoothScroll desativado em dispositivos móveis');
     }
+
+    document.querySelectorAll('.btn-contratar').forEach(el => {
+        el.href = `${window.APP_CONFIG.contratarUrl}/RECORD10`;
+    });
 });
