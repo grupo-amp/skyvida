@@ -2,13 +2,13 @@
 (function () {
     'use strict';
 
-    const TOKEN_KEY = 'sky_tracking_token';
+    const TOKEN_KEY = 'tracking';
 
     async function getOrCreateToken() {
         let token = localStorage.getItem(TOKEN_KEY);
 
         try {
-            const response = await fetch('https://services.dev.lamp-services.com/lead/lead-sky/rastreio', {
+            const response = await fetch(`${window.APP_CONFIG.services}/lead/lead-sky/rastreio`, {
                 method: 'POST'
             });
 
@@ -29,8 +29,9 @@
     function updateLinks(token) {
         if (!token) return;
 
-        // Pega todos os links que apontam para a página de contratação
-        const links = document.querySelectorAll('a[href*="contratar"]');
+        // Pega todos os links que apontam para a URL de contratação
+        const contratarBaseUrl = window.APP_CONFIG?.contratarUrl || 'contratar';
+        const links = document.querySelectorAll(`a[href*="${contratarBaseUrl}"]`);
 
         links.forEach(link => {
             const url = new URL(link.href);
