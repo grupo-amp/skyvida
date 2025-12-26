@@ -1310,6 +1310,7 @@ textarea.form-control {
     margin-top: 47px;
     padding: 0 34px;
 }
+a.button-olive {display: flex; align-items: center;}
 .pricing-four .price-btn .button-olive:hover {background: #2d3e50 none repeat scroll 0 0 !important;}
 .pricing-olive .price-title {background: #3993ff;}
 .footer-solid-color {background: #2d3e50;}
