@@ -1,3 +1,4 @@
 window.APP_CONFIG = {
-    contratarUrl: '#'
+    contratarUrl: '#',
+    services: '#'
 };

@@ -1,65 +1,65 @@
 (function ($) {
- "use strict";
-    
-/*-----------------------------
-	Menu Stick
----------------------------------*/
-    if ($(".sticker")[0]){
+    "use strict";
+
+    /*-----------------------------
+        Menu Stick
+    ---------------------------------*/
+    if ($(".sticker")[0]) {
         $('.sticker');
-        $(window).scroll(function(){
+        $(window).scroll(function () {
             var wind_scr = $(window).scrollTop();
             var window_width = $(window).width();
             var head_w = $('.sticker').height();
             if (window_width >= 10) {
-                if(wind_scr < 400){
-                    if($('.sticker').data('stick') === true){
+                if (wind_scr < 400) {
+                    if ($('.sticker').data('stick') === true) {
                         $('.sticker').data('stick', false);
-                        $('.sticker').stop(true).animate({opacity : 0}, 300, function(){
+                        $('.sticker').stop(true).animate({ opacity: 0 }, 300, function () {
                             $('.sticker').removeClass('stick slideDown');
-                            $('.sticker').stop(true).animate({opacity : 1}, 300);
+                            $('.sticker').stop(true).animate({ opacity: 1 }, 300);
                         });
                     }
                 } else {
-                    if($('.sticker').data('stick') === false || typeof $('.sticker').data('stick') === 'undefined'){
+                    if ($('.sticker').data('stick') === false || typeof $('.sticker').data('stick') === 'undefined') {
                         $('.sticker').data('stick', true);
-                        $('.sticker').stop(true).animate({opacity : 0},300,function(){
+                        $('.sticker').stop(true).animate({ opacity: 0 }, 300, function () {
                             $('.sticker').addClass('stick slideDown');
-                            $('.sticker.stick').stop(true).animate({opacity : 1}, 300);
+                            $('.sticker.stick').stop(true).animate({ opacity: 1 }, 300);
                         });
                     }
                 }
             }
         });
-    };	
-    
-/*----------------------------
-    jQuery MeanMenu
------------------------------- */
+    };
+
+    /*----------------------------
+        jQuery MeanMenu
+    ------------------------------ */
     $('.mobile-menu nav').meanmenu({
         meanScreenWidth: "990",
         meanMenuContainer: ".mobile-menu",
         onePage: true,
     });
-	
-/*----------------------------
-    Wow js active
------------------------------- */
+
+    /*----------------------------
+        Wow js active
+    ------------------------------ */
     new WOW().init();
- 
-/*--------------------------
-    ScrollUp
----------------------------- */	
-	$.scrollUp({
+
+    /*--------------------------
+        ScrollUp
+    ---------------------------- */
+    $.scrollUp({
         scrollText: '<i class="zmdi zmdi-chevron-up"></i>',
         easingType: 'linear',
         scrollSpeed: 900,
         animation: 'fade'
-    }); 
-    
-    
-/*--------------------------------
-	Testimonial Slick Carousel
------------------------------------*/
+    });
+
+
+    /*--------------------------------
+        Testimonial Slick Carousel
+    -----------------------------------*/
     $('.testimonial-text-slider').slick({
         slidesToShow: 1,
         slidesToScroll: 1,
@@ -68,9 +68,9 @@
         fade: true,
         asNavFor: '.slider-nav'
     });
-/*------------------------------------
-	Testimonial Slick Carousel as Nav
---------------------------------------*/
+    /*------------------------------------
+        Testimonial Slick Carousel as Nav
+    --------------------------------------*/
     $('.testimonial-image-slider').slick({
         slidesToShow: 3,
         slidesToScroll: 1,
@@ -82,35 +82,35 @@
         centerPadding: '10px',
         responsive: [
             {
-              breakpoint: 500,
-              settings: {
-                dots: false,
-                slidesToShow: 3,  
-                centerPadding: '0px',
+                breakpoint: 500,
+                settings: {
+                    dots: false,
+                    slidesToShow: 3,
+                    centerPadding: '0px',
                 }
             },
             {
-              breakpoint: 480,
-              settings: {
-                autoplay: true,
-                dots: false,
-                slidesToShow: 1,
-                centerMode: false,
+                breakpoint: 480,
+                settings: {
+                    autoplay: true,
+                    dots: false,
+                    slidesToShow: 1,
+                    centerMode: false,
                 }
             }
         ]
     });
-    
-/*--------------------------------
-	One Page Nav
------------------------------------*/
+
+    /*--------------------------------
+        One Page Nav
+    -----------------------------------*/
     var top_offset = $('.main-menu').height() - -60;
     $('.main-menu nav ul').onePageNav({
         currentClass: 'active',
         scrollOffset: top_offset,
     });
- 
-})(jQuery); 
+
+})(jQuery);
 class SmoothScroll {
     constructor() {
         this.init();
@@ -134,7 +134,7 @@ class SmoothScroll {
         this.isDragging = false;
         this.velocity = 0;
         this.lastTime = 0;
-        
+
         this.bindEvents();
         this.animate();
     }
@@ -146,12 +146,12 @@ class SmoothScroll {
     bindEvents() {
         // Detecta a intenção de scroll
         window.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
-        
+
         // Eventos de touch melhorados
         window.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
         window.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
         window.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: true });
-        
+
         window.addEventListener('keydown', this.handleKeys.bind(this));
 
         // Links âncora
@@ -160,7 +160,7 @@ class SmoothScroll {
         // Resize e load
         window.addEventListener('resize', this.updateScroll.bind(this));
         window.addEventListener('load', this.updateScroll.bind(this));
-        
+
         // Impede o scroll padrão apenas se não for touch device
         if (!this.isTouchDevice) {
             document.addEventListener('scroll', (e) => {
@@ -171,14 +171,14 @@ class SmoothScroll {
 
     handleWheel(e) {
         if (this.isTouchDevice) return; // Não aplica wheel em dispositivos touch
-        
+
         e.preventDefault();
-        
+
         const delta = e.deltaY || e.detail || (-e.wheelDelta);
         this.targetScroll += delta * this.settings.speed;
-        
+
         this.targetScroll = Math.max(0, Math.min(this.targetScroll, this.getMaxScroll()));
-        
+
         if (!this.isScrolling) {
             this.isScrolling = true;
         }
@@ -198,27 +198,27 @@ class SmoothScroll {
     handleTouchMove(e) {
         if (e.touches.length === 1 && this.isDragging) {
             e.preventDefault();
-            
+
             const touchY = e.touches[0].clientY;
             const currentTime = Date.now();
             const deltaTime = currentTime - this.lastTime;
-            
+
             if (deltaTime > 0) {
                 const deltaY = this.lastTouchY - touchY;
                 this.velocity = deltaY / deltaTime;
-                
+
                 // Aplica scroll diretamente durante o drag para melhor responsividade
                 this.targetScroll = this.touchStartScroll + (this.touchStartY - touchY) * 1.5;
                 this.targetScroll = Math.max(0, Math.min(this.targetScroll, this.getMaxScroll()));
-                
+
                 // Atualiza posição atual imediatamente para feedback visual
                 this.currentScroll = this.targetScroll;
                 window.scrollTo(0, this.currentScroll);
-                
+
                 this.lastTouchY = touchY;
                 this.lastTime = currentTime;
             }
-            
+
             this.isScrolling = true;
         }
     }
@@ -226,7 +226,7 @@ class SmoothScroll {
     handleTouchEnd(e) {
         if (this.isDragging) {
             this.isDragging = false;
-            
+
             // Aplica momentum/inércia baseado na velocidade
             if (Math.abs(this.velocity) > 0.1) {
                 const momentum = this.velocity * 800; // Ajuste da força do momentum
@@ -251,7 +251,7 @@ class SmoothScroll {
             e.preventDefault();
             this.targetScroll = this.getMaxScroll();
         }
-        
+
         this.targetScroll = Math.max(0, Math.min(this.targetScroll, this.getMaxScroll()));
         this.isScrolling = true;
     }
@@ -262,7 +262,7 @@ class SmoothScroll {
             e.preventDefault();
             const targetId = link.getAttribute('href');
             const targetElement = document.querySelector(targetId);
-            
+
             if (targetElement) {
                 const targetPosition = targetElement.offsetTop;
                 this.scrollTo(targetPosition, 1000);
@@ -278,10 +278,10 @@ class SmoothScroll {
         const animateScroll = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            
+
             // Easing function (easeInOutCubic)
-            const ease = progress < 0.5 
-                ? 4 * progress * progress * progress 
+            const ease = progress < 0.5
+                ? 4 * progress * progress * progress
                 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
             this.targetScroll = start + change * ease;
@@ -301,18 +301,18 @@ class SmoothScroll {
             requestAnimationFrame(this.animate.bind(this));
             return;
         }
-        
+
         const damping = this.isTouchDevice ? this.settings.touchDamping : this.settings.damping;
-        
+
         // Aplica suavização
         const diff = this.targetScroll - this.currentScroll;
         this.currentScroll += diff * damping;
-        
+
         // Aplica o scroll
         if (Math.abs(diff) > 0.1) {
             window.scrollTo(0, this.currentScroll);
         }
-        
+
         // Verifica se parou de scrollar
         if (Math.abs(this.targetScroll - this.currentScroll) < 0.5) {
             this.currentScroll = this.targetScroll;
@@ -335,7 +335,7 @@ class SmoothScroll {
 // Inicialização condicional - só ativa em desktop
 document.addEventListener('DOMContentLoaded', () => {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
+
     // Ativa apenas em desktop para evitar problemas no mobile
     if (!isMobile) {
         new SmoothScroll();
