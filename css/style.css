@@ -332,6 +332,7 @@ header .menu-btn {
 }
 .banner-text h1 span {color: #3993ff}
 .banner-text p {color: #ffffff; font-size: 20px; margin-bottom: 33px; max-width: 560px;}
+.banner-text li p { margin-bottom: 15px; }
 .button-default {
     background: #fff none repeat scroll 0 0;
     border: 0 none;
