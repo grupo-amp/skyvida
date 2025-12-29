@@ -9,7 +9,13 @@
 
         try {
             const response = await fetch(`${window.APP_CONFIG.services}/lead/lead-sky/rastreio`, {
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: token
+                })
             });
 
             const data = await response.json();
