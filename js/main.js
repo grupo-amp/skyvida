@@ -114,16 +114,6 @@
 
 // Inicialização condicional - só ativa em desktop
 document.addEventListener('DOMContentLoaded', () => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    // Ativa apenas em desktop para evitar problemas no mobile
-    if (!isMobile) {
-        new SmoothScroll();
-    } else {
-        // Para mobile, opcionalmente você pode adicionar um smooth scroll mais leve
-        // ou deixar o scroll nativo
-        console.log('SmoothScroll desativado em dispositivos móveis');
-    }
 
     document.querySelectorAll('.btn-contratar').forEach(el => {
         el.href = `${window.APP_CONFIG.contratarUrl}/RECORD10`;
